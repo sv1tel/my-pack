@@ -55,8 +55,8 @@
           Padding="8,4"
           Appearance="Transparent"
           Click="SettingsButton_Click"
-          Content="{l:Tr settings}"
-          Icon="{ui:SymbolIcon Settings24}" />
+          Icon="{ui:SymbolIcon Settings24}"
+          ToolTip="{l:Tr settings}" />
         <ui:Button
           x:Name="GameFolderButton"
           Margin="4,0,0,0"
@@ -82,7 +82,7 @@
         Grid.Row="0"
         Grid.Column="0"
         Grid.ColumnSpan="2"
-        MaxWidth="240"
+        MaxWidth="300"
         Margin="0,0,2,8"
         HorizontalAlignment="Right"
         VerticalAlignment="Bottom"
