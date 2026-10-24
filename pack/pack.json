@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "minecraft": "1.21.1",
   "neoForge": null,
-  "strictFolders": ["mods", "resourcepacks", "shaderpacks"],
+  "strictFolders": ["mods"],
   "defaultResourcePacks": [],
   "defaultShaderPack": null,
   "external": []
