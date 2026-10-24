@@ -389,6 +389,14 @@ public partial class MainWindow
         _settingsWindow.Show();
     }
 
+    private void GameFolderButton_Click(object sender, RoutedEventArgs e) => OpenGameFolder();
+
+    public void OpenGameFolder()
+    {
+        Directory.CreateDirectory(Settings.GameDir);
+        Process.Start(new ProcessStartInfo { FileName = Settings.GameDir, UseShellExecute = true });
+    }
+
     public async Task VerifyFilesAsync()
     {
         if (_busy || _gameProcess is not null) return;
@@ -488,6 +496,7 @@ public partial class MainWindow
     private void SetStatus(string? text)
     {
         StatusText.Text = text ?? "";
+        StatusText.ToolTip = string.IsNullOrEmpty(text) ? null : text;
         var hasStatus = !string.IsNullOrEmpty(text);
         StatusText.Visibility = hasStatus ? Visibility.Visible : Visibility.Collapsed;
         VersionText.Visibility = hasStatus ? Visibility.Collapsed : Visibility.Visible;

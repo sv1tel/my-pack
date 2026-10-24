@@ -44,17 +44,29 @@
         <ColumnDefinition Width="Auto" />
       </Grid.ColumnDefinitions>
 
-      <ui:Button
-        x:Name="SettingsButton"
+      <StackPanel
         Grid.Row="0"
         Grid.Column="0"
         Margin="0,0,0,6"
-        Padding="8,4"
         HorizontalAlignment="Left"
-        Appearance="Transparent"
-        Click="SettingsButton_Click"
-        Content="{l:Tr settings}"
-        Icon="{ui:SymbolIcon Settings24}" />
+        Orientation="Horizontal">
+        <ui:Button
+          x:Name="SettingsButton"
+          Padding="8,4"
+          Appearance="Transparent"
+          Click="SettingsButton_Click"
+          Content="{l:Tr settings}"
+          Icon="{ui:SymbolIcon Settings24}" />
+        <ui:Button
+          x:Name="GameFolderButton"
+          Margin="4,0,0,0"
+          Padding="8,4"
+          VerticalAlignment="Stretch"
+          Appearance="Transparent"
+          Click="GameFolderButton_Click"
+          Icon="{ui:SymbolIcon Folder24}"
+          ToolTip="{l:Tr s_game_dir}" />
+      </StackPanel>
 
       <TextBlock
         x:Name="VersionText"
@@ -70,7 +82,7 @@
         Grid.Row="0"
         Grid.Column="0"
         Grid.ColumnSpan="2"
-        MaxWidth="290"
+        MaxWidth="240"
         Margin="0,0,2,8"
         HorizontalAlignment="Right"
         VerticalAlignment="Bottom"
