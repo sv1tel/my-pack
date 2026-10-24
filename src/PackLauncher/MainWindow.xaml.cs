@@ -23,6 +23,7 @@ public partial class MainWindow
     private UpdatePlan? _plan;
     private LauncherRelease? _release;
     private bool _online;
+    private string? _offlineReason;
     private Process? _gameProcess;
     private bool _killedByUser;
     private bool _busy;
@@ -39,8 +40,9 @@ public partial class MainWindow
         _http = new HttpClient { Timeout = TimeSpan.FromMinutes(10) };
         _http.DefaultRequestHeaders.UserAgent.ParseAdd($"{AppConfig.DataFolderName}/{AppPaths.CurrentVersionText}");
         _http.DefaultRequestHeaders.Add("X-GitHub-Api-Version", "2022-11-28");
-        _packUpdater = new ModpackUpdater(_http);
-        _launcherUpdater = new LauncherUpdater(_http);
+        var api = new GitHubApi(_http);
+        _packUpdater = new ModpackUpdater(_http, api);
+        _launcherUpdater = new LauncherUpdater(_http, api);
 
         InitializeComponent();
 
@@ -152,9 +154,14 @@ public partial class MainWindow
             return;
         }
 
+        _offlineReason = null;
         try
         {
             _release = await _launcherUpdater.CheckAsync();
+        }
+        catch (GitHubRateLimitException ex)
+        {
+            _offlineReason = ex.Message;
         }
         catch
         {
@@ -166,8 +173,12 @@ public partial class MainWindow
             _plan = await _packUpdater.PlanAsync(_manifest, Settings.GameDir, fullCheck);
             _online = true;
         }
-        catch
+        catch (Exception ex)
         {
+            if (ex is GitHubRateLimitException)
+                _offlineReason = ex.Message;
+            else
+                LogError("update check", ex);
             _manifest = ModpackUpdater.LoadCachedManifest(Settings.GameDir) ?? _manifest;
             _plan = null;
             _online = false;
@@ -181,7 +192,7 @@ public partial class MainWindow
         else if (!IsRepoConfigured)
             SetStatus(Loc.T("repo_not_configured"));
         else if (!_online)
-            SetStatus(Loc.T("status_offline"));
+            SetStatus(_offlineReason ?? Loc.T("status_offline"));
         else if (_release is not null)
             SetStatus(Loc.F("status_launcher_update", _release.Version.ToString(3)));
         else if (PackUpdateAvailable)

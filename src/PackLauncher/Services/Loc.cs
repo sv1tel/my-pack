@@ -49,6 +49,8 @@ public sealed class Loc : INotifyPropertyChanged
     {
         ["ru"] = new()
         {
+            ["err_rate_limit"] = "GitHub временно ограничил запросы, попробуйте через час",
+            ["err_rate_limit_until"] = "GitHub временно ограничил запросы, попробуйте после {0}",
             ["update"] = "Обновить",
             ["status_checking"] = "Проверка обновлений…",
             ["status_pack_update"] = "Доступно обновление сборки {0}",
@@ -119,6 +121,8 @@ public sealed class Loc : INotifyPropertyChanged
 
         ["uk"] = new()
         {
+            ["err_rate_limit"] = "GitHub тимчасово обмежив запити, спробуйте за годину",
+            ["err_rate_limit_until"] = "GitHub тимчасово обмежив запити, спробуйте після {0}",
             ["update"] = "Оновити",
             ["status_checking"] = "Перевірка оновлень…",
             ["status_pack_update"] = "Доступне оновлення збірки {0}",
@@ -189,6 +193,8 @@ public sealed class Loc : INotifyPropertyChanged
 
         ["en"] = new()
         {
+            ["err_rate_limit"] = "GitHub is limiting requests, try again in an hour",
+            ["err_rate_limit_until"] = "GitHub is limiting requests, try again after {0}",
             ["update"] = "Update",
             ["status_checking"] = "Checking for updates…",
             ["status_pack_update"] = "Pack update {0} is available",

@@ -1,6 +1,5 @@
 using System.Diagnostics;
 using System.IO;
-using System.Net;
 using System.Net.Http;
 using System.Text.Json;
 using System.Text.RegularExpressions;
@@ -14,20 +13,21 @@ public sealed class LauncherUpdater
     private static readonly Regex VersionTag = new(@"^[vV]?\d+(\.\d+){0,3}$", RegexOptions.Compiled);
 
     private readonly HttpClient _http;
+    private readonly GitHubApi _api;
 
-    public LauncherUpdater(HttpClient http) => _http = http;
+    public LauncherUpdater(HttpClient http, GitHubApi api)
+    {
+        _http = http;
+        _api = api;
+    }
 
     public async Task<LauncherRelease?> CheckAsync(CancellationToken ct = default)
     {
-        using var request = new HttpRequestMessage(HttpMethod.Get, AppConfig.ReleasesApiUrl);
-        request.Headers.Accept.ParseAdd("application/vnd.github+json");
-
-        using var response = await _http.SendAsync(request, ct);
-        if (response.StatusCode == HttpStatusCode.NotFound)
+        var json = await _api.GetAsync(AppConfig.ReleasesApiUrl, "application/vnd.github+json", ct);
+        if (json is null)
             return null;
-        response.EnsureSuccessStatusCode();
 
-        using var doc = JsonDocument.Parse(await response.Content.ReadAsStringAsync(ct));
+        using var doc = JsonDocument.Parse(json);
         LauncherRelease? best = null;
 
         foreach (var release in doc.RootElement.EnumerateArray())

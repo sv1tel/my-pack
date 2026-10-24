@@ -94,31 +94,28 @@ public sealed class ModpackUpdater
     };
 
     private readonly HttpClient _http;
+    private readonly GitHubApi _api;
 
-    public ModpackUpdater(HttpClient http) => _http = http;
+    public ModpackUpdater(HttpClient http, GitHubApi api)
+    {
+        _http = http;
+        _api = api;
+    }
 
     public async Task<PackManifest> FetchManifestAsync(CancellationToken ct = default)
     {
-        string commit;
-        using (var request = new HttpRequestMessage(HttpMethod.Get, AppConfig.CommitApiUrl))
-        {
-            request.Headers.Accept.ParseAdd("application/vnd.github.sha");
-            using var response = await _http.SendAsync(request, ct);
-            response.EnsureSuccessStatusCode();
-            commit = (await response.Content.ReadAsStringAsync(ct)).Trim();
-        }
+        var commit = (await _api.GetAsync(AppConfig.CommitApiUrl, "application/vnd.github.sha", ct)
+                      ?? throw new InvalidDataException(AppConfig.RepositoryUrl)).Trim();
 
         var packJson = await _http.GetStringAsync(AppConfig.RawFileUrl(commit, "pack.json"), ct);
         var manifest = JsonSerializer.Deserialize<PackManifest>(packJson, JsonOptions)
                        ?? throw new InvalidDataException("pack.json");
         manifest.Commit = commit;
 
-        using (var request = new HttpRequestMessage(HttpMethod.Get, AppConfig.TreeApiUrl(commit)))
+        var treeJson = await _api.GetAsync(AppConfig.TreeApiUrl(commit), "application/vnd.github+json", ct)
+                       ?? throw new InvalidDataException(AppConfig.RepositoryUrl);
         {
-            request.Headers.Accept.ParseAdd("application/vnd.github+json");
-            using var response = await _http.SendAsync(request, ct);
-            response.EnsureSuccessStatusCode();
-            using var doc = JsonDocument.Parse(await response.Content.ReadAsStringAsync(ct));
+            using var doc = JsonDocument.Parse(treeJson);
             if (doc.RootElement.TryGetProperty("truncated", out var truncated) && truncated.GetBoolean())
                 throw new InvalidDataException(Loc.T("err_tree_truncated"));
 
