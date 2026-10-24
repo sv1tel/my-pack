@@ -66,35 +66,6 @@
           Click="GameFolderButton_Click"
           Icon="{ui:SymbolIcon Folder24}"
           ToolTip="{l:Tr s_game_dir}" />
-        <Grid Margin="6,0,0,0" VerticalAlignment="Center">
-          <ComboBox
-            x:Name="VersionCombo"
-            Width="190"
-            MinHeight="0"
-            Padding="10,5,8,5"
-            FontSize="13">
-            <ComboBoxItem Content="1.21.1 · NeoForge" />
-          </ComboBox>
-          <TextBlock
-            Margin="11,0,36,0"
-            VerticalAlignment="Center"
-            FontSize="13"
-            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-            IsHitTestVisible="False"
-            Text="{l:Tr select_version}"
-            TextTrimming="CharacterEllipsis">
-            <TextBlock.Style>
-              <Style TargetType="TextBlock">
-                <Setter Property="Visibility" Value="Collapsed" />
-                <Style.Triggers>
-                  <DataTrigger Binding="{Binding SelectedItem, ElementName=VersionCombo}" Value="{x:Null}">
-                    <Setter Property="Visibility" Value="Visible" />
-                  </DataTrigger>
-                </Style.Triggers>
-              </Style>
-            </TextBlock.Style>
-          </TextBlock>
-        </Grid>
       </StackPanel>
 
       <TextBlock
@@ -111,7 +82,7 @@
         Grid.Row="0"
         Grid.Column="0"
         Grid.ColumnSpan="2"
-        MaxWidth="130"
+        MaxWidth="300"
         Margin="0,0,2,8"
         HorizontalAlignment="Right"
         VerticalAlignment="Bottom"
