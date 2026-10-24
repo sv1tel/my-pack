@@ -1,0 +1,130 @@
+<ui:FluentWindow
+  x:Class="PackLauncher.MainWindow"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:l="clr-namespace:PackLauncher.Services"
+  xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+  Title="Launcher"
+  Width="440"
+  MinWidth="0"
+  MinHeight="0"
+  ExtendsContentIntoTitleBar="True"
+  Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+  ResizeMode="CanMinimize"
+  SizeToContent="Height"
+  WindowBackdropType="Mica"
+  WindowCornerPreference="Round"
+  WindowStartupLocation="CenterScreen">
+
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="Auto" />
+    </Grid.RowDefinitions>
+
+    <ui:TitleBar
+      x:Name="AppTitleBar"
+      Grid.Row="0"
+      Padding="16,4,4,4"
+      Title="Launcher"
+      CanMaximize="False"
+      ShowMaximize="False">
+      <ui:TitleBar.Icon>
+        <ui:ImageIcon Width="20" Height="20" Source="pack://application:,,,/Assets/icon.png" />
+      </ui:TitleBar.Icon>
+    </ui:TitleBar>
+
+    <Grid Grid.Row="1" Margin="16,0,16,16">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="Auto" />
+      </Grid.RowDefinitions>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*" />
+        <ColumnDefinition Width="Auto" />
+      </Grid.ColumnDefinitions>
+
+      <StackPanel
+        Grid.Row="0"
+        Grid.Column="0"
+        Margin="0,0,0,6"
+        HorizontalAlignment="Left"
+        Orientation="Horizontal">
+        <ui:Button
+          x:Name="SettingsButton"
+          Padding="8,4"
+          Appearance="Transparent"
+          Click="SettingsButton_Click"
+          Icon="{ui:SymbolIcon Settings24}"
+          ToolTip="{l:Tr settings}" />
+        <ui:Button
+          x:Name="GameFolderButton"
+          Margin="4,0,0,0"
+          Padding="8,4"
+          VerticalAlignment="Stretch"
+          Appearance="Transparent"
+          Click="GameFolderButton_Click"
+          Icon="{ui:SymbolIcon Folder24}"
+          ToolTip="{l:Tr s_game_dir}" />
+      </StackPanel>
+
+      <TextBlock
+        x:Name="VersionText"
+        Grid.Row="0"
+        Grid.Column="1"
+        Margin="0,0,2,8"
+        HorizontalAlignment="Right"
+        VerticalAlignment="Bottom"
+        FontSize="12"
+        Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+      <TextBlock
+        x:Name="StatusText"
+        Grid.Row="0"
+        Grid.Column="0"
+        Grid.ColumnSpan="2"
+        MaxWidth="300"
+        Margin="0,0,2,8"
+        HorizontalAlignment="Right"
+        VerticalAlignment="Bottom"
+        FontSize="12"
+        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+        TextTrimming="CharacterEllipsis"
+        Visibility="Collapsed" />
+
+      <ui:TextBox
+        x:Name="NickBox"
+        Grid.Row="1"
+        Grid.Column="0"
+        Height="44"
+        VerticalAlignment="Center"
+        VerticalContentAlignment="Center"
+        FontSize="15"
+        Icon="{ui:SymbolIcon Person24}"
+        MaxLength="16"
+        PlaceholderText="{l:Tr nick_placeholder}"
+        TextChanged="NickBox_TextChanged" />
+
+      <ui:Button
+        x:Name="MainButton"
+        Grid.Row="1"
+        Grid.Column="1"
+        Width="160"
+        Height="44"
+        Margin="10,0,0,0"
+        Appearance="Primary"
+        Click="MainButton_Click"
+        FontSize="15"
+        FontWeight="SemiBold"
+        Icon="{ui:SymbolIcon Play24}" />
+    </Grid>
+
+    <ProgressBar
+      x:Name="ProgressBar"
+      Grid.Row="1"
+      Height="3"
+      VerticalAlignment="Bottom"
+      Maximum="1"
+      Minimum="0"
+      Visibility="Collapsed" />
+  </Grid>
+</ui:FluentWindow>
