@@ -1,0 +1,214 @@
+<ui:FluentWindow
+  x:Class="PackLauncher.SettingsWindow"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:l="clr-namespace:PackLauncher.Services"
+  xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+  Title="{l:Tr settings}"
+  Width="620"
+  Height="680"
+  MinWidth="620"
+  MaxWidth="620"
+  MinHeight="680"
+  MaxHeight="680"
+  ResizeMode="NoResize"
+  ExtendsContentIntoTitleBar="True"
+  Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+  ShowInTaskbar="False"
+  WindowBackdropType="Mica"
+  WindowCornerPreference="Round"
+  WindowStartupLocation="CenterOwner">
+
+  <ui:FluentWindow.Resources>
+    <Style x:Key="CardTitle" BasedOn="{StaticResource {x:Type TextBlock}}" TargetType="TextBlock">
+      <Setter Property="FontSize" Value="14" />
+      <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+      <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+    <Style x:Key="CardDescription" BasedOn="{StaticResource {x:Type TextBlock}}" TargetType="TextBlock">
+      <Setter Property="FontSize" Value="12" />
+      <Setter Property="Margin" Value="0,2,0,0" />
+      <Setter Property="Foreground" Value="{DynamicResource TextFillColorSecondaryBrush}" />
+      <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+    <Style x:Key="SectionTitle" BasedOn="{StaticResource {x:Type TextBlock}}" TargetType="TextBlock">
+      <Setter Property="FontSize" Value="14" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+      <Setter Property="Margin" Value="2,18,0,8" />
+      <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+    </Style>
+    <Style x:Key="Card" BasedOn="{StaticResource {x:Type ui:CardControl}}" TargetType="ui:CardControl">
+      <Setter Property="Margin" Value="0,0,0,4" />
+      <Setter Property="Padding" Value="16,12" />
+    </Style>
+  </ui:FluentWindow.Resources>
+
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
+    </Grid.RowDefinitions>
+
+    <ui:TitleBar Grid.Row="0" Padding="16,4,4,4" Title="{l:Tr settings}" CanMaximize="False" ShowMaximize="False" ShowMinimize="False">
+      <ui:TitleBar.Icon>
+        <ui:ImageIcon Width="20" Height="20" Source="pack://application:,,,/Assets/icon.png" />
+      </ui:TitleBar.Icon>
+    </ui:TitleBar>
+
+    <ScrollViewer Grid.Row="1" Padding="20,0,20,20" VerticalScrollBarVisibility="Auto">
+      <StackPanel>
+
+        <ui:CardControl Margin="0,4,0,4" Icon="{ui:SymbolIcon LocalLanguage24}" Style="{StaticResource Card}">
+          <ui:CardControl.Header>
+            <TextBlock Style="{StaticResource CardTitle}" Text="{l:Tr s_language}" />
+          </ui:CardControl.Header>
+          <ComboBox x:Name="LanguageCombo" MinWidth="180" SelectionChanged="Language_Changed" />
+        </ui:CardControl>
+
+        <TextBlock Style="{StaticResource SectionTitle}" Text="{l:Tr s_memory}" />
+        <ui:CardExpander Margin="0,0,0,4" Icon="{ui:SymbolIcon DeveloperBoard24}" IsExpanded="True">
+          <ui:CardExpander.Header>
+            <StackPanel>
+              <TextBlock Style="{StaticResource CardTitle}" Text="{l:Tr s_pc_ram}" />
+              <TextBlock x:Name="RamSummaryText" Style="{StaticResource CardDescription}" />
+            </StackPanel>
+          </ui:CardExpander.Header>
+          <StackPanel Margin="40,4,8,8">
+            <RadioButton x:Name="Ram4" Margin="0,2" Checked="Ram_Changed" GroupName="ram" Tag="4" />
+            <RadioButton x:Name="Ram8" Margin="0,2" Checked="Ram_Changed" GroupName="ram" Tag="8" />
+            <RadioButton x:Name="Ram16" Margin="0,2" Checked="Ram_Changed" GroupName="ram" Tag="16" />
+            <RadioButton x:Name="Ram32" Margin="0,2" Checked="Ram_Changed" GroupName="ram" Tag="32" />
+          </StackPanel>
+        </ui:CardExpander>
+
+        <ui:CardExpander Margin="0,0,0,4" Icon="{ui:SymbolIcon Code24}" IsExpanded="False">
+          <ui:CardExpander.Header>
+            <StackPanel>
+              <TextBlock Style="{StaticResource CardTitle}" Text="{l:Tr s_commands}" />
+              <TextBlock Style="{StaticResource CardDescription}" Text="{l:Tr s_commands_desc}" />
+            </StackPanel>
+          </ui:CardExpander.Header>
+          <StackPanel Margin="40,4,8,8">
+            <TextBox
+              x:Name="MemoryArgsBox"
+              Margin="0,0,0,4"
+              FontFamily="Consolas"
+              FontSize="12"
+              IsReadOnly="True" />
+            <TextBox
+              x:Name="FlagsBox"
+              MinHeight="140"
+              MaxHeight="260"
+              AcceptsReturn="True"
+              FontFamily="Consolas"
+              FontSize="12"
+              TextChanged="FlagsBox_TextChanged"
+              TextWrapping="NoWrap"
+              VerticalScrollBarVisibility="Auto" />
+            <ui:Button
+              Margin="0,8,0,0"
+              HorizontalAlignment="Right"
+              Click="ResetFlags_Click"
+              Content="{l:Tr s_reset}"
+              Icon="{ui:SymbolIcon ArrowReset24}" />
+          </StackPanel>
+        </ui:CardExpander>
+
+        <TextBlock Style="{StaticResource SectionTitle}" Text="{l:Tr s_game}" />
+        <ui:CardControl Icon="{ui:SymbolIcon Window24}" Style="{StaticResource Card}">
+          <ui:CardControl.Header>
+            <TextBlock Style="{StaticResource CardTitle}" Text="{l:Tr s_window_size}" />
+          </ui:CardControl.Header>
+          <StackPanel Orientation="Horizontal">
+            <TextBox x:Name="WidthBox" Width="80" MaxLength="5" PreviewTextInput="DigitsOnly" TextChanged="Resolution_Changed" LostFocus="Resolution_LostFocus" />
+            <TextBlock Margin="8,0" VerticalAlignment="Center" Text="×" />
+            <TextBox x:Name="HeightBox" Width="80" MaxLength="5" PreviewTextInput="DigitsOnly" TextChanged="Resolution_Changed" LostFocus="Resolution_LostFocus" />
+          </StackPanel>
+        </ui:CardControl>
+
+        <ui:CardControl Icon="{ui:SymbolIcon FullScreenMaximize24}" Style="{StaticResource Card}">
+          <ui:CardControl.Header>
+            <TextBlock Style="{StaticResource CardTitle}" Text="{l:Tr s_fullscreen}" />
+          </ui:CardControl.Header>
+          <ui:ToggleSwitch x:Name="FullScreenSwitch" Checked="FullScreen_Changed" Unchecked="FullScreen_Changed" />
+        </ui:CardControl>
+
+        <ui:CardControl Icon="{ui:SymbolIcon Play24}" Style="{StaticResource Card}">
+          <ui:CardControl.Header>
+            <TextBlock Style="{StaticResource CardTitle}" Text="{l:Tr s_after_launch}" />
+          </ui:CardControl.Header>
+          <ComboBox x:Name="AfterLaunchCombo" MinWidth="200" SelectionChanged="AfterLaunch_Changed">
+            <ComboBoxItem Content="{l:Tr s_after_minimize}" />
+            <ComboBoxItem Content="{l:Tr s_after_close}" />
+            <ComboBoxItem Content="{l:Tr s_after_nothing}" />
+          </ComboBox>
+        </ui:CardControl>
+
+        <ui:CardControl Icon="{ui:SymbolIcon Folder24}" Style="{StaticResource Card}">
+          <ui:CardControl.Header>
+            <StackPanel>
+              <TextBlock Style="{StaticResource CardTitle}" Text="{l:Tr s_game_dir}" />
+              <TextBlock x:Name="GameDirText" Style="{StaticResource CardDescription}" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" />
+            </StackPanel>
+          </ui:CardControl.Header>
+          <StackPanel Orientation="Horizontal">
+            <ui:Button Margin="0,0,8,0" Click="OpenGameDir_Click" Content="{l:Tr s_open}" />
+            <ui:Button Click="ChangeGameDir_Click" Content="{l:Tr s_change}" />
+          </StackPanel>
+        </ui:CardControl>
+
+        <TextBlock Style="{StaticResource SectionTitle}" Text="{l:Tr s_maintenance}" />
+        <ui:CardControl Icon="{ui:SymbolIcon ArrowClockwise24}" Style="{StaticResource Card}">
+          <ui:CardControl.Header>
+            <StackPanel>
+              <TextBlock Style="{StaticResource CardTitle}" Text="{l:Tr s_verify}" />
+              <TextBlock Style="{StaticResource CardDescription}" Text="{l:Tr s_verify_desc}" />
+            </StackPanel>
+          </ui:CardControl.Header>
+          <ui:Button Click="Verify_Click" Content="{l:Tr s_verify_btn}" />
+        </ui:CardControl>
+
+        <ui:CardControl Icon="{ui:SymbolIcon History24}" Style="{StaticResource Card}">
+          <ui:CardControl.Header>
+            <TextBlock Style="{StaticResource CardTitle}" Text="{l:Tr s_logs}" />
+          </ui:CardControl.Header>
+          <ui:Button Click="OpenLogs_Click" Content="{l:Tr s_open}" />
+        </ui:CardControl>
+
+        <TextBlock Style="{StaticResource SectionTitle}" Text="{l:Tr s_appearance}" />
+        <ui:CardControl Icon="{ui:SymbolIcon DarkTheme24}" Style="{StaticResource Card}">
+          <ui:CardControl.Header>
+            <TextBlock Style="{StaticResource CardTitle}" Text="{l:Tr s_theme}" />
+          </ui:CardControl.Header>
+          <ComboBox x:Name="ThemeCombo" MinWidth="200" SelectionChanged="Theme_Changed">
+            <ComboBoxItem Content="{l:Tr s_theme_system}" />
+            <ComboBoxItem Content="{l:Tr s_theme_light}" />
+            <ComboBoxItem Content="{l:Tr s_theme_dark}" />
+          </ComboBox>
+        </ui:CardControl>
+
+        <TextBlock Style="{StaticResource SectionTitle}" Text="{l:Tr s_about}" />
+        <ui:CardControl Icon="{ui:SymbolIcon Info24}" Style="{StaticResource Card}">
+          <ui:CardControl.Header>
+            <StackPanel>
+              <TextBlock x:Name="AboutVersionText" Style="{StaticResource CardTitle}" />
+              <TextBlock x:Name="AboutUpdateText" Style="{StaticResource CardDescription}" Visibility="Collapsed" />
+              <ProgressBar
+                x:Name="UpdateProgressBar"
+                Height="3"
+                Margin="0,6,12,0"
+                Maximum="1"
+                Minimum="0"
+                Visibility="Collapsed" />
+            </StackPanel>
+          </ui:CardControl.Header>
+          <ui:Button
+            x:Name="UpdateLauncherButton"
+            Click="UpdateLauncher_Click"
+            Content="{l:Tr s_update_launcher}"
+            Icon="{ui:SymbolIcon ArrowDownload24}" />
+        </ui:CardControl>
+      </StackPanel>
+    </ScrollViewer>
+  </Grid>
+</ui:FluentWindow>
