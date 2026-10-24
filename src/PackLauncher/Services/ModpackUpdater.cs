@@ -1,4 +1,5 @@
 using System.IO;
+using System.IO.Compression;
 using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
@@ -390,7 +391,9 @@ public sealed class ModpackUpdater
             var id = "file/" + name;
             selected.Remove(id);
             selected.Add(id);
-            if (!incompatible.Contains(id))
+            if (IsPackCompatible(file, minecraft))
+                incompatible.Remove(id);
+            else if (!incompatible.Contains(id))
                 incompatible.Add(id);
         }
 
@@ -402,6 +405,79 @@ public sealed class ModpackUpdater
             lines.Add(Loc.I.Language == "uk" ? "lang:uk_ua" : "lang:ru_ru");
         Directory.CreateDirectory(gameDir);
         File.WriteAllLines(optionsPath, lines);
+    }
+
+    private static readonly Dictionary<string, int> ResourcePackFormats = new()
+    {
+        ["1.21"] = 34,
+        ["1.21.1"] = 34,
+        ["1.21.2"] = 42,
+        ["1.21.3"] = 42,
+        ["1.21.4"] = 46
+    };
+
+    private static bool IsPackCompatible(string packPath, string minecraft)
+    {
+        if (!ResourcePackFormats.TryGetValue(minecraft, out var target))
+            return true;
+        try
+        {
+            string? json = null;
+            if (Directory.Exists(packPath))
+            {
+                var meta = Path.Combine(packPath, "pack.mcmeta");
+                if (File.Exists(meta))
+                    json = File.ReadAllText(meta);
+            }
+            else
+            {
+                using var zip = ZipFile.OpenRead(packPath);
+                var entry = zip.GetEntry("pack.mcmeta");
+                if (entry is not null)
+                {
+                    using var reader = new StreamReader(entry.Open());
+                    json = reader.ReadToEnd();
+                }
+            }
+
+            if (json is null)
+                return true;
+
+            using var doc = JsonDocument.Parse(json, new JsonDocumentOptions
+            {
+                AllowTrailingCommas = true,
+                CommentHandling = JsonCommentHandling.Skip
+            });
+            if (!doc.RootElement.TryGetProperty("pack", out var pack))
+                return true;
+
+            if (pack.TryGetProperty("supported_formats", out var supported))
+            {
+                switch (supported.ValueKind)
+                {
+                    case JsonValueKind.Number:
+                        if (supported.GetInt32() == target)
+                            return true;
+                        break;
+                    case JsonValueKind.Array when supported.GetArrayLength() >= 2:
+                        if (supported[0].GetInt32() <= target && target <= supported[1].GetInt32())
+                            return true;
+                        break;
+                    case JsonValueKind.Object:
+                        var min = supported.TryGetProperty("min_inclusive", out var lo) ? lo.GetInt32() : int.MinValue;
+                        var max = supported.TryGetProperty("max_inclusive", out var hi) ? hi.GetInt32() : int.MaxValue;
+                        if (min <= target && target <= max)
+                            return true;
+                        break;
+                }
+            }
+
+            return !pack.TryGetProperty("pack_format", out var format) || format.GetInt32() == target;
+        }
+        catch
+        {
+            return true;
+        }
     }
 
     private static List<string>? ReadJsonList(List<string> lines, string key)

@@ -278,8 +278,9 @@ public partial class MainWindow
             {
                 ModpackUpdater.ApplyGameDefaults(manifest, Settings.GameDir);
             }
-            catch
+            catch (Exception ex)
             {
+                LogError("resource packs", ex);
             }
 
             var process = await _game.PrepareAsync(manifest, session, Settings, CreateProgress());
@@ -488,7 +489,7 @@ public partial class MainWindow
             ProgressBar.Value = 0;
     }
 
-    public void ShowError(string title, Exception ex)
+    private static void LogError(string title, Exception ex)
     {
         try
         {
@@ -499,7 +500,11 @@ public partial class MainWindow
         catch
         {
         }
+    }
 
+    public void ShowError(string title, Exception ex)
+    {
+        LogError(title, ex);
         System.Windows.MessageBox.Show(this, ex.Message, title, System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
     }
 }

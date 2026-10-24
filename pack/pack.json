@@ -4,12 +4,7 @@
   "minecraft": "1.21.1",
   "neoForge": null,
   "strictFolders": ["mods", "resourcepacks", "shaderpacks"],
-  "defaultResourcePacks": [
-    "FA+All_Extensions-v1.8.1.zip",
-    "FreshAnimations_v1.11.1_1.20+.zip",
-    "Fancy Crops v1.3.zip",
-    "Simple Grass Flowers v2.0.0.zip"
-  ],
+  "defaultResourcePacks": [],
   "defaultShaderPack": null,
   "external": []
 }
