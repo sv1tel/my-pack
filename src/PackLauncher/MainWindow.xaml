@@ -74,6 +74,14 @@
           Appearance="Transparent"
           Click="ServerIpButton_Click"
           Content="188.42.99.131:25546" />
+        <ui:SymbolIcon
+          x:Name="IpCopiedIcon"
+          Margin="4,0,0,0"
+          VerticalAlignment="Center"
+          FontSize="18"
+          Foreground="{DynamicResource SystemFillColorSuccessBrush}"
+          Symbol="Checkmark24"
+          Visibility="Hidden" />
       </StackPanel>
 
       <TextBlock

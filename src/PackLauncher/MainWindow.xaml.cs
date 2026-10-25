@@ -391,7 +391,9 @@ public partial class MainWindow
 
     private void GameFolderButton_Click(object sender, RoutedEventArgs e) => OpenGameFolder();
 
-    private void ServerIpButton_Click(object sender, RoutedEventArgs e)
+    private int _ipCopyClicks;
+
+    private async void ServerIpButton_Click(object sender, RoutedEventArgs e)
     {
         try
         {
@@ -399,7 +401,14 @@ public partial class MainWindow
         }
         catch
         {
+            return;
         }
+
+        var click = ++_ipCopyClicks;
+        IpCopiedIcon.Visibility = Visibility.Visible;
+        await Task.Delay(1500);
+        if (click == _ipCopyClicks)
+            IpCopiedIcon.Visibility = Visibility.Hidden;
     }
 
     public void OpenGameFolder()
