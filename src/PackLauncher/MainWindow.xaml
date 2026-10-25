@@ -66,6 +66,14 @@
           Click="GameFolderButton_Click"
           Icon="{ui:SymbolIcon Folder24}"
           ToolTip="{l:Tr s_game_dir}" />
+        <ui:Button
+          x:Name="ServerIpButton"
+          Margin="4,0,0,0"
+          Padding="8,4"
+          VerticalAlignment="Stretch"
+          Appearance="Transparent"
+          Click="ServerIpButton_Click"
+          Content="188.42.99.131:25546" />
       </StackPanel>
 
       <TextBlock

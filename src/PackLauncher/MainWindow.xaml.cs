@@ -391,6 +391,17 @@ public partial class MainWindow
 
     private void GameFolderButton_Click(object sender, RoutedEventArgs e) => OpenGameFolder();
 
+    private void ServerIpButton_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            Clipboard.SetText(ServerIpButton.Content?.ToString() ?? "");
+        }
+        catch
+        {
+        }
+    }
+
     public void OpenGameFolder()
     {
         Directory.CreateDirectory(Settings.GameDir);
